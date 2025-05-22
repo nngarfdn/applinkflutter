@@ -1,12 +1,8 @@
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy Jekyll with GitHub Pages dependencies preinstalled
+name: Deploy App Links to GitHub Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -15,8 +11,7 @@ permissions:
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# Allow only one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -28,15 +23,37 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
+      
+      - name: Create .nojekyll file
+        run: touch .nojekyll
+      
+      - name: Ensure .well-known directory exists
+        run: mkdir -p .well-known
+      
+      - name: Create assetlinks.json if not exists
+        run: |
+          if [ ! -f .well-known/assetlinks.json ]; then
+            echo '[{
+              "relation": ["delegate_permission/common.handle_all_urls"],
+              "target": {
+                "namespace": "android_app",
+                "package_name": "id.go.bpn.sentuh",
+                "sha256_cert_fingerprints": ["3C:C8:4B:37:4E:2E:1E:41:44:67:0E:ED:DD:55:42:6B:0E:22:38:91"]
+              }
+            }]' > .well-known/assetlinks.json
+          fi
+      
+      - name: Package site
+        run: |
+          zip -r site.zip . -x "*.git*"
+      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
 
   # Deployment job
   deploy:

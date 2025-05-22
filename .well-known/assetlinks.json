@@ -2,8 +2,8 @@
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {
     "namespace": "android_app",
-    "package_name": "3C:C8:4B:37:4E:2E:1E:41:44:67:0E:ED:DD:55:42:6B:0E:22:38:91",
+    "package_name": "id.go.bpn.sentuh",
     "sha256_cert_fingerprints":
-    ["id.go.bpn.sentuh"]
+    ["3C:C8:4B:37:4E:2E:1E:41:44:67:0E:ED:DD:55:42:6B:0E:22:38:91"]
   }
 }]
